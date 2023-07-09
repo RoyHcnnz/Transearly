@@ -5,7 +5,7 @@ from TranslateCore import Translator
 import Secrets
 
 intents = discord.Intents.default()
-intents.message_content = True
+#intents.message_content = True
 
 Transearly = commands.Bot("!", intents=intents)
 translator = Translator()
