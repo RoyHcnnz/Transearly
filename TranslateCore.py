@@ -4,6 +4,7 @@ import json
 
 class Translator:
 
+    lastLang = None
     conn = http.client.HTTPSConnection(Secrets.TRANLATOR_HOST)
     headers = {
         'content-type': "application/json",
@@ -32,6 +33,9 @@ class Translator:
 
         res = self.conn.getresponse()
         data = json.loads(res.read())
+        if not isinstance(data, list):
+            print(data)
+            return None
         srcLang = data[0]["detectedLanguage"]["language"]
         result = data[0]["translations"]
         return {
