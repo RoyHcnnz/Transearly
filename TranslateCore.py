@@ -41,9 +41,3 @@ class Translator:
 
     def getNameOfLangFromCode(self, code: str) -> str:
         return self.lang[code]["name"]
-
-trans = Translator()
-result = trans.translate("你好，你今天吃了什么？", ['en', 'de', 'it'])
-print("The source language is " + trans.getNameOfLangFromCode(result["srcLang"]))
-for r in result["result"]:
-    print(trans.getNameOfLangFromCode(r["to"]) + ": " + r["text"])

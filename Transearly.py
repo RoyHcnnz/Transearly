@@ -1,23 +1,36 @@
 import discord
 from discord.ext import commands
+from TranslateCore import Translator
 
 import Secrets
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents)
+Transearly = commands.Bot("!", intents=intents)
+translator = Translator()
 
-@client.event
+@Transearly.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    print(f'We have logged in as {Transearly.user}')
+    await Transearly.tree.sync()
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+@Transearly.tree.command(name="translate", description="translate text to target language")
+@discord.app_commands.describe(text="The source text to traslate from", targetlang="The target languages to translate to. Seperate by comma. i.e <lang1,lang2,...>")
+async def translate(interaction: discord.Interaction, text: str, targetlang: str="en, zh-Hans"):
+    to = targetlang.replace(" ", "").split(",")
+    result = translator.translate(text, to)
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+    replyEmbed = discord.Embed(title="Translate Result", description=text)
+    replyEmbed.add_field(
+        name="Source Language", 
+        value=translator.getNameOfLangFromCode(result["srcLang"]) + " [" + result["srcLang"] + "]", 
+        inline=False
+    )
+    # reply = "The source language is " + translator.getNameOfLangFromCode(result["srcLang"])
+    for r in result["result"]:
+        replyEmbed.add_field(name=translator.getNameOfLangFromCode(r["to"]), value=r["text"], inline=False)
+        # reply += "\n" + translator.getNameOfLangFromCode(r["to"]) + ": " + r["text"]
+    await interaction.response.send_message(embed=replyEmbed, ephemeral=True)
 
-client.run(Secrets.DISCORD_APP_TOKEN)
+Transearly.run(Secrets.DISCORD_APP_TOKEN)
