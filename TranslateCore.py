@@ -17,7 +17,7 @@ class Translator:
         data = json.loads(res.read())
         self.lang = data["translation"]
 
-    def translate(self, text: str, to: list[str] = ['en']) -> dict:
+    def translate(self, text: str, to = ['en']):
         payload = "[\r{\r\"Text\": \"" + text + "\"\r}\r]"
         toStr = ""
         for i in range(len(to)):
